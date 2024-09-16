@@ -15,9 +15,11 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::inertia('/dashboard', 'Dashboard')->middleware(['auth', 'verified'])->name('dashboard'); // shorthand route
 
 Route::middleware('auth')->group(function () {
 

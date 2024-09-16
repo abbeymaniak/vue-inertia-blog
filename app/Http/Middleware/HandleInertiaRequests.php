@@ -26,6 +26,7 @@ class HandleInertiaRequests extends Middleware
      * Define the props that are shared by default.
      *
      * @return array<string, mixed>
+     * shared data here
      */
     public function share(Request $request): array
     {
@@ -34,6 +35,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'message' => $request->session()->get('message')
+            // 'greeting' => 'Hello world'
         ];
     }
 }

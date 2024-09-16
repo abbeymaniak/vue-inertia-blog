@@ -11,7 +11,7 @@ class PostController extends Controller
 {
     public function index(){
 
-        $posts = Post::with('user')->get(); // eager loading posts with its user
+        $posts = Post::with('user')->latest()->get(); // eager loading posts with its user
 
 
         return inertia()->render('Posts/Index', [
@@ -25,6 +25,9 @@ class PostController extends Controller
 
 
         auth()->user()->post()->create($request->validated());
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')->with('message', [
+            'type' => 'success',
+            'body' => 'Post Created Succesfully'
+            ]);
     }
 }

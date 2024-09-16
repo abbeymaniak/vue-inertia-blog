@@ -1,33 +1,60 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, useForm, router, Link } from "@inertiajs/vue3";
+import { Head, useForm, router, Link, usePage } from "@inertiajs/vue3";
+import { watch } from "vue";
+import {useToast} from 'vue-toastification'
 
 defineProps({
     posts: Object,
-    now: String
+    now: String,
+
 });
 
-const form = useForm({
+const toast = useToast();
+
+const page = usePage();
+
+watch(
+    () => page.props.message,
+
+    (message) => {
+        if(message.body){
+        toast(message.body, {
+            type: message.type,
+        })
+        }
+
+    }
+);
+
+
+const form = useForm("StorePost",{
+    // body: page.props.greeting,
     body: "",
 });
 
-const createPost = () => {
+
+const createPost = (msg) => {
     form.post(route("posts.store"), {
         onSuccess: () => {
             form.reset();
+
+
         },
     });
-
 };
 
 const refreshPosts = () => {
-    router.get(route('posts.index'), {}, {
-        only: ['posts','now'],
-        preserveScroll: true
-    });
-}
-
-
+    router.get(
+        route("posts.index"),
+        {},
+        {
+            only: ["posts", "now"],
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
+};
 </script>
 
 <template>
@@ -46,7 +73,6 @@ const refreshPosts = () => {
                     @submit.prevent="createPost"
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6"
                 >
-                {{ form }}
                     <label for="body" class="sr-only">Body</label>
                     <textarea
                         v-model="form.body"
@@ -64,28 +90,28 @@ const refreshPosts = () => {
                         {{ form.errors.body }}
                     </p>
                     <button
-                    :disabled="form.processing"
+                        :disabled="form.processing"
                         type="submit"
                         class="mt-2 bg-gray-700 px-4 py-2 rounded-md font-medium text-white"
-                        :class="{'opacity-50': form.processing}"
+                        :class="{ 'opacity-50': form.processing }"
                     >
                         Post
                     </button>
                 </form>
 
-                 {{ now }}
-                 <div class="py-3 flex justify-center">
+                {{ now }}
+                <div class="py-3 flex justify-center">
                     <Link
-                    preserve-scroll
-                    :only="['posts']"
+                        preserve-scroll
+                        preserve-state
+                        :only="['posts']"
                         :href="route('posts.index')"
                         class="text-sm text-indigo-700"
                         type="button"
                     >
-                    Refresh Posts
+                        Refresh Posts
                     </Link>
-
-                 </div>
+                </div>
 
                 <div v-for="post in posts.data" :key="post.id">
                     <div
