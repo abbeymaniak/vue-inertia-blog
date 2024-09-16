@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
+import { Head, useForm, router, Link } from "@inertiajs/vue3";
 
 defineProps({
     posts: Object,
@@ -75,13 +75,15 @@ const refreshPosts = () => {
 
                  {{ now }}
                  <div class="py-3 flex justify-center">
-                    <button
-                    @click="refreshPosts"
+                    <Link
+                    preserve-scroll
+                    :only="['posts']"
+                        :href="route('posts.index')"
                         class="text-sm text-indigo-700"
                         type="button"
                     >
                     Refresh Posts
-                    </button>
+                    </Link>
 
                  </div>
 
