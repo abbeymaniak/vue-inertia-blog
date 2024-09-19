@@ -17,17 +17,18 @@ class PostController extends Controller
         return inertia()->render('Posts/Index', [
             'posts' => PostResource::collection($posts),
             'now' => now(),
+            'can' => [
+                'post_create' => auth()->user()->can('create', Post::class),
+            ]
         ]);
     }
 
     public function store(StorePostRequest $request){
 
+        abort(403);
 
-
+//sleep(5)
         auth()->user()->post()->create($request->validated());
-        return redirect()->route('posts.index')->with('message', [
-            'type' => 'success',
-            'body' => 'Post Created Succesfully'
-            ]);
+        return redirect()->route('posts.index')->with('success','Post Created Succesfully');
     }
 }

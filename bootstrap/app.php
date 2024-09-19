@@ -1,6 +1,9 @@
 <?php
 
+
+use Inertia\Inertia;
 use Illuminate\Foundation\Application;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -19,5 +22,26 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+
+        $exceptions->respond(function(Response $response){
+
+            if(shouldRenderCustomErrorPage() && in_array($response->getStatusCode(), [403, 404]) ){
+                return Inertia::render('Error', [
+                    'status' => $response->getStatusCode(),
+                ]);
+            }
+
+            return $response;
+        });
     })->create();
+
+    function shouldRenderCustomErrorPage(){
+
+        if(app()->environment(['local', 'testing'])){
+            return false;
+        }
+
+        if(config('app.custom_error_pages_enabled')){
+            return true;
+        }
+    }

@@ -7,25 +7,26 @@ import {useToast} from 'vue-toastification'
 defineProps({
     posts: Object,
     now: String,
+    can: Object
 
 });
 
-const toast = useToast();
+// const toast = useToast();
 
-const page = usePage();
+// const page = usePage();
 
-watch(
-    () => page.props.message,
+// watch(
+//     () => page.props.message,
 
-    (message) => {
-        if(message.body){
-        toast(message.body, {
-            type: message.type,
-        })
-        }
+//     (message) => {
+//         if(message.body){
+//         toast(message.body, {
+//             type: message.type,
+//         })
+//         }
 
-    }
-);
+//     }
+// );
 
 
 const form = useForm("StorePost",{
@@ -69,7 +70,9 @@ const refreshPosts = () => {
 
         <div class="py-12">
             <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 space-y-3">
+
                 <form
+                v-if="can.post_create"
                     @submit.prevent="createPost"
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6"
                 >
